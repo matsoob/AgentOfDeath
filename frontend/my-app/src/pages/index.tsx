@@ -19,6 +19,7 @@ async function firstTimeUser(): Promise<boolean> {
 
 export default function Home() {
   const [isFirstTimeUser, setIsFirstTimeUser] = useState(true);
+  const [deceasedName, setDeceasedName] = useState("");  
 
   useEffect(() => {
     // Use `useEffect` for making the API call when the component mounts
@@ -39,9 +40,9 @@ export default function Home() {
       className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
     >
       {isFirstTimeUser ? (
-        <WelcomePage setIsFirstTimeUser={setIsFirstTimeUser} />
+        <WelcomePage setIsFirstTimeUser={setIsFirstTimeUser} setDeceasedName={setDeceasedName} />
       ) : (
-        <PersonalMessage />
+        <PersonalMessage deceasedName={deceasedName}/>
       )}
     </main>
   );
