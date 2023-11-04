@@ -37,7 +37,7 @@ export const SubscriptionManager: FC<any> = () => {
     refreshAllSubs(setTableData);
   };
 
-  const isInputValid = !!subName;
+  const isInputInvalid = !subName;
   return (
     <div>
       <div>
@@ -68,7 +68,7 @@ export const SubscriptionManager: FC<any> = () => {
           value={subName}
           onChange={(foo) => setSubName(foo.target.value)}
         />
-        <button onClick={onButtonClick} disabled={isInputValid}>
+        <button onClick={onButtonClick} disabled={isInputInvalid}>
           send
         </button>
       </div>
