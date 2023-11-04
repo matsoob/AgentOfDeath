@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import { WelcomePage } from "./welcomePage";
 import { WelcomeBackPage } from "./welcomeBackPage";
 import { useEffect, useState } from "react";
+import { PersonalMessage } from "./personalWelcomeMessage";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,7 +41,7 @@ export default function Home() {
       {isFirstTimeUser ? (
         <WelcomePage setIsFirstTimeUser={setIsFirstTimeUser} />
       ) : (
-        <WelcomeBackPage />
+        <PersonalMessage />
       )}
     </main>
   );

@@ -1,3 +1,5 @@
+from claudeService import ClaudeService
+from subscriptionService import SubscriptionService
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from exampleService import ExampleService
@@ -62,3 +64,29 @@ example_service = ExampleService()
 async def firstTimeUser():
     res = example_service.get_first_time_user()
     return res
+
+
+subscription_service = SubscriptionService()
+
+
+@app.get("/get-all-subs")
+async def getAllSubs():
+    print("GET ALL SUBS")
+    res = subscription_service.get_list_of_subs()
+    print("GET ALL SUBS")
+    return res
+
+
+@app.get("/add-sub")
+async def addSub(name_of_sub: str, status: str = "UNKNOWN"):
+    subscription_service.add_sub(name_of_sub=name_of_sub, status=status)
+    return
+
+
+claude_service = ClaudeService()
+
+
+@app.get("/get-personal-welcome-message")
+async def get_welcome(name_of_deceased: str):
+    result = claude_service.getPersonalMessage(name_of_deceased=name_of_deceased)
+    return {"message": result}

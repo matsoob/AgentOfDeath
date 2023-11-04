@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { SubscriptionManager } from "./addSubscription";
 
 async function exampleFetch() {
   try {
@@ -32,6 +33,7 @@ export function WelcomeBackPage() {
   return (
     <div>
       <span>Let us pick up where we left off...</span>
+      <SubscriptionManager />
     </div>
   );
 }
