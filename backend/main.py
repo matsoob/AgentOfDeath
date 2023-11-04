@@ -74,9 +74,7 @@ subscription_service = SubscriptionService()
 
 @app.get("/get-all-subs")
 async def getAllSubs():
-    print("GET ALL SUBS")
     res = subscription_service.get_list_of_subs()
-    print("GET ALL SUBS")
     return res
 
 
