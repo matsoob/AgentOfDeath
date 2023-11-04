@@ -1,4 +1,4 @@
-STATUSES = ["UNKNWON", "IT_EXISTS", "CANCELLING", "CANCELLED", "FAILED"]
+STATUSES = ["UNKNOWN", "IT_EXISTS", "CANCELLING", "CANCELLED", "FAILED"]
 # class Subscription:
 #     def __init__(self, name_of_sub: str, status: str):
 #         self.name_of_sub = name_of_sub
@@ -18,7 +18,9 @@ class SubscriptionService:
 
     def add_sub(self, *, name_of_sub: str, status: str):
         if status not in STATUSES:
+            print("bad status")
+            print(status)
             raise Exception(
                 "We got an unrecognised type of subscription insertion into DB"
             )
-        self.list.append({name_of_sub: name_of_sub, status: status})
+        self.list.append({"name_of_sub": name_of_sub, "status": status})

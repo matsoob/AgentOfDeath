@@ -80,6 +80,8 @@ async def getAllSubs():
 
 @app.get("/add-sub")
 async def addSub(name_of_sub: str, status: str = "UNKNOWN"):
+    if not status:
+        status = "UNKNOWN"
     subscription_service.add_sub(name_of_sub=name_of_sub, status=status)
     return
 
@@ -90,4 +92,10 @@ claude_service = ClaudeService()
 @app.get("/get-personal-welcome-message")
 async def get_welcome(name_of_deceased: str):
     result = claude_service.getPersonalMessage(name_of_deceased=name_of_deceased)
+    return {"message": result}
+
+
+@app.get("/example-claude-endpoint")
+async def example(prompt: str):
+    result = claude_service.custom_prompt(prompt=prompt)
     return {"message": result}

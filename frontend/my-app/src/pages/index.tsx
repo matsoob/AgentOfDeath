@@ -3,6 +3,7 @@ import { WelcomePage } from "./welcomePage";
 import { WelcomeBackPage } from "./welcomeBackPage";
 import { useEffect, useState } from "react";
 import { PersonalMessage } from "./personalWelcomeMessage";
+import { SubscriptionManager } from "./addSubscription";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -41,7 +42,7 @@ export default function Home() {
       {isFirstTimeUser ? (
         <WelcomePage setIsFirstTimeUser={setIsFirstTimeUser} />
       ) : (
-        <PersonalMessage />
+        <SubscriptionManager />
       )}
     </main>
   );
