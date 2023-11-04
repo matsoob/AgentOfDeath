@@ -4,7 +4,8 @@ import { WelcomeBackPage } from "./welcomeBackPage";
 import { useEffect, useState } from "react";
 import { PersonalMessage } from "./personalWelcomeMessage";
 import { SubscriptionManager } from "./addSubscription";
-import PdfParser from "./pdf";
+import { PdfParser } from "./pdf";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -41,7 +42,33 @@ export default function Home() {
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
     >
-      <PdfParser />
+      <Tabs>
+        <TabList>
+          <Tab>Welcome</Tab>
+          <Tab>PDF</Tab>
+          <Tab>List of Subscriptions</Tab>
+          <Tab>New Tab</Tab>
+        </TabList>
+        <TabPanel>
+          {isFirstTimeUser ? (
+            <WelcomePage
+              setIsFirstTimeUser={setIsFirstTimeUser}
+              setDeceasedName={setDeceasedName}
+            />
+          ) : (
+            <PersonalMessage deceasedName={deceasedName} />
+          )}
+        </TabPanel>
+        <TabPanel>
+          <PdfParser />
+        </TabPanel>
+        <TabPanel>
+          <SubscriptionManager />
+        </TabPanel>
+        <TabPanel>
+          <div>Example new tab content</div>
+        </TabPanel>
+      </Tabs>
       {/* {isFirstTimeUser ? (
         <WelcomePage
           setIsFirstTimeUser={setIsFirstTimeUser}

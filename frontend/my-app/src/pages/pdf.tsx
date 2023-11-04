@@ -1,9 +1,37 @@
 import React, { useState } from "react";
 import * as pdfjs from "pdfjs-dist";
 
-function PdfParser() {
+async function sendToBankStatementEndpoint(content: string) {
+  const data = { statementContent: content };
+  try {
+    // name_of_sub: str, status
+    const result = await fetch(`http://localhost:8000/submit-bank-statement`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (result.ok) {
+      return;
+    } else {
+      throw new Error("There was an error Submitting to the Extract Endpoint");
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export function PdfParser() {
   const [pdfText, setPdfText] = useState("");
 
+  const submitParsePdf = async () => {
+    await sendToBankStatementEndpoint(pdfText);
+  };
+
+  const shouldBeAbleToSubmit = () => {
+    !!pdfText && pdfText.length > 1000;
+  };
   const handleDrop = async (e) => {
     e.preventDefault();
 
@@ -61,11 +89,14 @@ function PdfParser() {
       )}
       {pdfText && (
         <div>
-          <pre>{pdfText ? "Success" : "Please upload something"}</pre>
+          <pre>
+            {pdfText ? "Statement Uploaded" : "Something went wrong..."}
+          </pre>
+          <button onClick={submitParsePdf} disabled={!shouldBeAbleToSubmit}>
+            Start looking for subscriptions to cancel
+          </button>
         </div>
       )}
     </div>
   );
 }
-
-export default PdfParser;

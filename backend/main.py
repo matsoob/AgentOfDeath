@@ -1,9 +1,11 @@
+from typing import Any, Dict
 from claudeService import ClaudeService
 from subscriptionService import SubscriptionService
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from exampleService import ExampleService
 from dotenv import load_dotenv
+from pydantic import BaseModel
 
 load_dotenv()
 
@@ -27,6 +29,10 @@ app.add_middleware(
 )
 
 fistTimeUser = True
+
+
+class BankStatementPayload(BaseModel):
+    statementContent: str
 
 
 @app.get("/")
@@ -99,3 +105,14 @@ async def get_welcome(name_of_deceased: str):
 async def example(prompt: str):
     result = claude_service.custom_prompt(prompt=prompt)
     return {"message": result}
+
+
+@app.post("/submit-bank-statement")
+async def submitBankStatement(data: BankStatementPayload):
+    print(data)
+    statement_extracted = data.statementContent
+    if not statement_extracted:
+        print("SOMETHING WENT WRONG")
+    else:
+        claude_service.parse_bank_statement(statement_extracted=statement_extracted)
+        return {"message": result}
