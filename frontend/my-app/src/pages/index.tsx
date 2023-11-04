@@ -38,16 +38,19 @@ export default function Home() {
     fetchData();
   }, []);
 
+  const tabTailwind =
+    "py-2 px-4 bg-blue-500 text-white rounded-lg cursor-pointer";
   return (
     <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
+      className={`flex min-h-screen flex-col items-center justify-between p-24`}
     >
-      <Tabs>
-        <TabList>
-          <Tab>Welcome</Tab>
-          <Tab>PDF</Tab>
-          <Tab>List of Subscriptions</Tab>
-          <Tab>New Tab</Tab>
+      <Tabs className="bg-gray-100 p-4">
+        <TabList className="flex space-x-4">
+          <Tab className={tabTailwind}>Welcome</Tab>
+          <Tab className={tabTailwind}>PDF</Tab>
+          <Tab className={tabTailwind}>List of Subscriptions</Tab>
+          <Tab className={tabTailwind}>New Tab</Tab>
+          <Tab className={tabTailwind}>New Tab 2</Tab>
         </TabList>
         <TabPanel>
           {isFirstTimeUser ? (
@@ -66,7 +69,12 @@ export default function Home() {
           <SubscriptionManager />
         </TabPanel>
         <TabPanel>
-          <div>Example new tab content</div>
+          <div className="p-4 shadow-md">
+            <div>Example new tab content</div>
+          </div>
+        </TabPanel>
+        <TabPanel>
+          <div>Example new tab content 2</div>
         </TabPanel>
       </Tabs>
       {/* {isFirstTimeUser ? (
