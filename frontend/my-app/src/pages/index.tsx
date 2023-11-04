@@ -4,6 +4,7 @@ import { WelcomeBackPage } from "./welcomeBackPage";
 import { useEffect, useState } from "react";
 import { PersonalMessage } from "./personalWelcomeMessage";
 import { SubscriptionManager } from "./addSubscription";
+import PdfParser from "./pdf";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,14 +41,15 @@ export default function Home() {
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
     >
-      {isFirstTimeUser ? (
+      <PdfParser />
+      {/* {isFirstTimeUser ? (
         <WelcomePage
           setIsFirstTimeUser={setIsFirstTimeUser}
           setDeceasedName={setDeceasedName}
         />
       ) : (
         <PersonalMessage deceasedName={deceasedName} />
-      )}
+      )} */}
     </main>
   );
 }
