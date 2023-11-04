@@ -3,6 +3,9 @@ from subscriptionService import SubscriptionService
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from exampleService import ExampleService
+from dotenv import load_dotenv
+
+load_dotenv()
 
 origins = [
     "http://localhost",
