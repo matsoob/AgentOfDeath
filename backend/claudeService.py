@@ -8,7 +8,7 @@ class ClaudeService:
 
     def getPersonalMessage(self, name_of_deceased: str) -> str:
         print("Beginning of getPersonalMessage")
-        prompt = f"\n\nHuman: Please generate a gentle welcome message for our website, where we help this person deal with the death of <name>{name_of_deceased}</name> \n\nAssistant: "
+        prompt = f"{HUMAN_PROMPT} Please generate a gentle welcome message for our website, where we help this person deal with the death of <name>{name_of_deceased}</name> {AI_PROMPT} "
         print(prompt)
         response = self._make_claude_call(prompt)
         print("End of getPersonalMessage")
@@ -16,7 +16,7 @@ class ClaudeService:
 
     def custom_prompt(self, custom_prompt: str) -> str:
         print("Beginning of custom prompt")
-        prompt = f"\n\nHuman: {custom_prompt} \n\nAssistant: "
+        prompt = f"{HUMAN_PROMPT}  {custom_prompt} {AI_PROMPT}: "
         response = self._make_claude_call(prompt)
         print("End of custom prompt")
         return response
