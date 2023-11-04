@@ -1,29 +1,35 @@
 import { Inter } from "next/font/google";
-import { useEffect, useState } from "react"; // Import `useEffect` and `useState` from 'react'
+import { WelcomePage } from "./welcomePage";
+import { WelcomeBackPage } from "./welcomeBackPage";
+import { useEffect, useState } from "react";
+import { PersonalMessage } from "./personalWelcomeMessage";
+import { SubscriptionManager } from "./addSubscription";
+import { PdfParser } from "./pdf";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 
 const inter = Inter({ subsets: ["latin"] });
 
-async function exampleFetch() {
+async function firstTimeUser(): Promise<boolean> {
   try {
-    const result = await fetch("http://localhost:8000/notes");
-    console.log("FETCH: ", result);
-    return result.json();
+    const result = await fetch("http://localhost:8000/is-first-time-user");
+    const content = await result.json();
+    return content;
   } catch (e) {
     console.log(e);
-    return "testtest";
+    return true;
   }
 }
 
 export default function Home() {
-  const [quotes, setQuotes] = useState(null); // Use `useState` to manage the quotes state
+  const [isFirstTimeUser, setIsFirstTimeUser] = useState(true);
+  const [deceasedName, setDeceasedName] = useState("");
 
   useEffect(() => {
     // Use `useEffect` for making the API call when the component mounts
     async function fetchData() {
       try {
-        const data = await exampleFetch();
-        console.log(data);
-        setQuotes(data);
+        const data = await firstTimeUser();
+        setIsFirstTimeUser(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -36,9 +42,41 @@ export default function Home() {
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
     >
-      <div>
-        <span>From backend: {quotes !== null ? quotes : "Loading..."}</span>
-      </div>
+      <Tabs>
+        <TabList>
+          <Tab>Welcome</Tab>
+          <Tab>PDF</Tab>
+          <Tab>List of Subscriptions</Tab>
+          <Tab>New Tab</Tab>
+        </TabList>
+        <TabPanel>
+          {isFirstTimeUser ? (
+            <WelcomePage
+              setIsFirstTimeUser={setIsFirstTimeUser}
+              setDeceasedName={setDeceasedName}
+            />
+          ) : (
+            <PersonalMessage deceasedName={deceasedName} />
+          )}
+        </TabPanel>
+        <TabPanel>
+          <PdfParser />
+        </TabPanel>
+        <TabPanel>
+          <SubscriptionManager />
+        </TabPanel>
+        <TabPanel>
+          <div>Example new tab content</div>
+        </TabPanel>
+      </Tabs>
+      {/* {isFirstTimeUser ? (
+        <WelcomePage
+          setIsFirstTimeUser={setIsFirstTimeUser}
+          setDeceasedName={setDeceasedName}
+        />
+      ) : (
+        <PersonalMessage deceasedName={deceasedName} />
+      )} */}
     </main>
   );
 }

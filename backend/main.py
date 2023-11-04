@@ -1,11 +1,18 @@
 import json
 
+from typing import Any, Dict
+from claudeService import ClaudeService
+from subscriptionService import SubscriptionService
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from exampleService import ExampleService
+from dotenv import load_dotenv
+from pydantic import BaseModel
 
 from cancel_api.models import CancelInput
 from cancel_api.cancel.chain import build_cancel_chain_v1
 
+load_dotenv()
 
 origins = [
     "http://localhost",
@@ -25,6 +32,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+fistTimeUser = True
+
+
+class BankStatementPayload(BaseModel):
+    statementContent: str
 
 
 @app.get("/")
@@ -61,3 +74,57 @@ async def introFlow():
 @app.get("/notes")
 async def notes():
     return '{"testField": "foo"}'
+
+
+# here's an example of a stateful service
+# in case you want to do in-memory persistence
+example_service = ExampleService()
+
+
+@app.get("/is-first-time-user")
+async def firstTimeUser():
+    res = example_service.get_first_time_user()
+    return res
+
+
+subscription_service = SubscriptionService()
+
+
+@app.get("/get-all-subs")
+async def getAllSubs():
+    res = subscription_service.get_list_of_subs()
+    return res
+
+
+@app.get("/add-sub")
+async def addSub(name_of_sub: str, status: str = "UNKNOWN"):
+    if not status:
+        status = "UNKNOWN"
+    subscription_service.add_sub(name_of_sub=name_of_sub, status=status)
+    return
+
+
+claude_service = ClaudeService()
+
+
+@app.get("/get-personal-welcome-message")
+async def get_welcome(name_of_deceased: str):
+    result = claude_service.getPersonalMessage(name_of_deceased=name_of_deceased)
+    return {"message": result}
+
+
+@app.get("/example-claude-endpoint")
+async def example(prompt: str):
+    result = claude_service.custom_prompt(prompt=prompt)
+    return {"message": result}
+
+
+@app.post("/submit-bank-statement")
+async def submitBankStatement(data: BankStatementPayload):
+    print(data)
+    statement_extracted = data.statementContent
+    if not statement_extracted:
+        print("SOMETHING WENT WRONG")
+    else:
+        claude_service.parse_bank_statement(statement_extracted=statement_extracted)
+        return {"message": result}
