@@ -11,6 +11,7 @@ async def main_route():
 @app.get("/cancel")
 async def cancel():
     # implement cancel code here
+
     return True
 
 
