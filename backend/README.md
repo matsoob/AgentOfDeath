@@ -1,7 +1,8 @@
 ## Running Locally
 
-Follow here to install poetry:
-https://python-poetry.org/docs/
+Follow here to install poetry: https://python-poetry.org/docs/
+
+Then you can run:
 
 ```
 poetry shell
