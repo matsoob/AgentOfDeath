@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 
-export function PersonalMessage() {
+interface PersonalMessagePropts {
+  deceasedName: string;
+}
+
+export function PersonalMessage(props: PersonalMessagePropts) {
   const [welcomeText, setWelcomeText] = useState("We are sorry for your loss");
-  const nameOfDeceased = "Mary";
+  const nameOfDeceased = props.deceasedName;
   useEffect(() => {
     (async () => {
       try {
