@@ -1,5 +1,10 @@
+import json
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from cancel_api.models import CancelInput
+from cancel_api.cancel.chain import build_cancel_chain_v1
 
 
 origins = [
@@ -27,11 +32,18 @@ async def main_route():
     return {"message": "Hey, It is me Goku"}
 
 
-@app.get("/cancel")
-async def cancel():
-    # implement cancel code here
+@app.post("/v0/cancel")
+async def cancel(cancel_input: CancelInput):
+    cancel_chain = build_cancel_chain_v1()
+    out = cancel_chain.invoke(
+        {
+            "service": cancel_input.service,
+            "sender_email": cancel_input.email,
+            "name": cancel_input.name,
+        }
+    )
 
-    return True
+    return json.loads(out)
 
 
 @app.get("/findSubs")
