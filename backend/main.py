@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from exampleService import ExampleService
 
 origins = [
     "http://localhost",
@@ -20,6 +20,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+fistTimeUser = True
 
 
 @app.get("/")
@@ -49,3 +51,14 @@ async def introFlow():
 @app.get("/notes")
 async def notes():
     return '{"testField": "foo"}'
+
+
+# here's an example of a stateful service
+# in case you want to do in-memory persistence
+example_service = ExampleService()
+
+
+@app.get("/is-first-time-user")
+async def firstTimeUser():
+    res = example_service.get_first_time_user()
+    return res

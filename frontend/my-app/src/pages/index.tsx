@@ -1,29 +1,30 @@
 import { Inter } from "next/font/google";
-import { useEffect, useState } from "react"; // Import `useEffect` and `useState` from 'react'
+import { WelcomePage } from "./welcomePage";
+import { WelcomeBackPage } from "./welcomeBackPage";
+import { useEffect, useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
-async function exampleFetch() {
+async function firstTimeUser(): Promise<boolean> {
   try {
-    const result = await fetch("http://localhost:8000/notes");
-    console.log("FETCH: ", result);
-    return result.json();
+    const result = await fetch("http://localhost:8000/is-first-time-user");
+    const content = await result.json();
+    return content;
   } catch (e) {
     console.log(e);
-    return "testtest";
+    return true;
   }
 }
 
 export default function Home() {
-  const [quotes, setQuotes] = useState(null); // Use `useState` to manage the quotes state
+  const [isFirstTimeUser, setIsFirstTimeUser] = useState(true);
 
   useEffect(() => {
     // Use `useEffect` for making the API call when the component mounts
     async function fetchData() {
       try {
-        const data = await exampleFetch();
-        console.log(data);
-        setQuotes(data);
+        const data = await firstTimeUser();
+        setIsFirstTimeUser(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -36,9 +37,11 @@ export default function Home() {
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
     >
-      <div>
-        <span>From backend: {quotes !== null ? quotes : "Loading..."}</span>
-      </div>
+      {isFirstTimeUser ? (
+        <WelcomePage setIsFirstTimeUser={setIsFirstTimeUser} />
+      ) : (
+        <WelcomeBackPage />
+      )}
     </main>
   );
 }
