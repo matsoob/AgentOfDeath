@@ -47,7 +47,8 @@ export default function Home() {
       <Tabs className="bg-gray-100 p-4">
         <TabList className="flex space-x-4">
           <Tab className={tabTailwind}>Welcome</Tab>
-          <Tab className={tabTailwind}>PDF</Tab>
+          <Tab className={tabTailwind}>Add Bankstatement</Tab>
+          <Tab className={tabTailwind}>Add Certificate</Tab>
           <Tab className={tabTailwind}>List of Subscriptions</Tab>
           <Tab className={tabTailwind}>New Tab</Tab>
           <Tab className={tabTailwind}>New Tab 2</Tab>
@@ -63,7 +64,16 @@ export default function Home() {
           )}
         </TabPanel>
         <TabPanel>
-          <PdfParser />
+          <PdfParser
+            dragAndDropTitle="Drag and Drop a Bank Statement"
+            submitButtonTitle="Try to find subscriptions"
+          />
+        </TabPanel>
+        <TabPanel>
+          <PdfParser
+            dragAndDropTitle="Drag and Drop a Certificate of Death"
+            submitButtonTitle="Submit for Verification"
+          />
         </TabPanel>
         <TabPanel>
           <SubscriptionManager />

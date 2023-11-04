@@ -21,8 +21,11 @@ async function sendToBankStatementEndpoint(content: string) {
     console.log(e);
   }
 }
-
-export function PdfParser() {
+export interface PdfParserProps {
+  dragAndDropTitle: string;
+  submitButtonTitle: string;
+}
+export function PdfParser(props: PdfParserProps) {
   const [pdfText, setPdfText] = useState("");
 
   const submitParsePdf = async () => {
@@ -84,7 +87,7 @@ export function PdfParser() {
             justifyContent: "center",
           }}
         >
-          <p>Drag and drop a PDF file here</p>
+          <p>{props.dragAndDropTitle}</p>
         </div>
       )}
       {pdfText && (
@@ -93,7 +96,7 @@ export function PdfParser() {
             {pdfText ? "Statement Uploaded" : "Something went wrong..."}
           </pre>
           <button onClick={submitParsePdf} disabled={!shouldBeAbleToSubmit}>
-            Start looking for subscriptions to cancel
+            {props.submitButtonTitle}
           </button>
         </div>
       )}
