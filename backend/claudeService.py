@@ -1,10 +1,11 @@
 from functools import cache
-from anthropic import Anthropic, HUMAN_PROMPT, AI_PROMPT
+from anthropic import Anthropic, HUMAN_PROMPT, AI_PROMPT, AsyncAnthropic
 
 
 class ClaudeService:
     def __init__(self) -> None:
         self.client = Anthropic()
+        self.async_client = AsyncAnthropic()
 
     def getPersonalMessage(self, name_of_deceased: str) -> str:
         print("Beginning of getPersonalMessage")
@@ -33,8 +34,15 @@ class ClaudeService:
     def parse_bank_statement(self, statement_extracted: str):
         print("Beginning bank statement processing")
         # TODO: test better prompt?
-        prompt = f"{HUMAN_PROMPT}Here is a parsed bank statement: <bankStatement>{statement_extracted}</bankStatement>. Please pick out all the recurring subscription services. {AI_PROMPT} "
+        prompt = f"{HUMAN_PROMPT}Here is a parsed bank statement: <bankStatement>{statement_extracted}</bankStatement>. Please pick out all the recurring subscription services. Return the responses without any extra text, just a comma-delimited list of responses {AI_PROMPT} "
         print(prompt)
         response = self._make_claude_call(prompt)
         print("End of bank statement processing")
         return response
+
+    def _make_claude_call_async(self, prompt: str):
+        return self.async_client.completions.create(
+            model="claude-2",
+            max_tokens_to_sample=300,
+            prompt=f"{HUMAN_PROMPT} {prompt} {AI_PROMPT}",
+        )

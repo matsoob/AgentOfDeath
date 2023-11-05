@@ -1,4 +1,3 @@
-from typing import Any, Dict
 from claudeService import ClaudeService
 from subscriptionService import SubscriptionService
 from fastapi import FastAPI
@@ -109,10 +108,11 @@ async def example(prompt: str):
 
 @app.post("/submit-bank-statement")
 async def submitBankStatement(data: BankStatementPayload):
-    print(data)
     statement_extracted = data.statementContent
     if not statement_extracted:
         print("SOMETHING WENT WRONG")
     else:
-        claude_service.parse_bank_statement(statement_extracted=statement_extracted)
+        result = claude_service.parse_bank_statement(
+            statement_extracted=statement_extracted
+        )
         return {"message": result}
