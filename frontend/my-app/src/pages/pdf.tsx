@@ -13,7 +13,7 @@ async function sendToBankStatementEndpoint(content: string) {
       },
     });
     if (result.ok) {
-      return result.json() as unknown as Array<string>;
+      return (await result.json()).message as unknown as Array<string>;
     } else {
       throw new Error("There was an error Submitting to the Extract Endpoint");
     }
@@ -27,7 +27,7 @@ export interface PdfParserProps {
   submitButtonTitle: string;
   submitted?: boolean;
   setSubmittedResponse?: Dispatch<SetStateAction<Array<string>>>;
-  submittedResponse: Array<string>;
+  submittedResponse?: Array<string>;
 }
 export function PdfParser(props: PdfParserProps) {
   const [pdfText, setPdfText] = useState("");
@@ -36,10 +36,8 @@ export function PdfParser(props: PdfParserProps) {
     const response = await sendToBankStatementEndpoint(pdfText);
     if (props.setSubmittedResponse) {
       console.log("setSubmittedResponse");
-      console.log(props.submittedResponse);
       console.log(response);
-      await props.setSubmittedResponse(response);
-      console.log(props.submittedResponse);
+      props.setSubmittedResponse(response);
       props;
     } else {
       console.log("missing setSubmittedResponse");
@@ -104,7 +102,7 @@ export function PdfParser(props: PdfParserProps) {
           <p>{props.dragAndDropTitle}</p>
         </div>
       )}
-      {pdfText && (
+      {pdfText && props.submittedResponse?.length === 0 && (
         <div>
           <pre>
             {pdfText ? "Statement Uploaded" : "Something went wrong..."}
