@@ -34,7 +34,7 @@ class ClaudeService:
     def parse_bank_statement(self, statement_extracted: str):
         print("Beginning bank statement processing")
         # TODO: test better prompt?
-        prompt = f"{HUMAN_PROMPT}Here is a parsed bank statement: <bankStatement>{statement_extracted}</bankStatement>. Please pick out all the recurring subscription services. Return the responses without any extra text, just a comma-delimited list of responses {AI_PROMPT} "
+        prompt = f"{HUMAN_PROMPT}Here is a parsed bank statement: <bankStatement>{statement_extracted}</bankStatement>. Please pick out all the recurring subscription services. Return the responses without any extra text, with the name of the subscription on each new line {AI_PROMPT} "
         print(prompt)
         response = self._make_claude_call(prompt)
         print("End of bank statement processing")
