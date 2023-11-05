@@ -1,12 +1,20 @@
+from dotenv import load_dotenv
+
+load_dotenv()
+import json
+
+from typing import Any, Dict
 from claudeService import ClaudeService
 from subscriptionService import SubscriptionService
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from exampleService import ExampleService
-from dotenv import load_dotenv
+
 from pydantic import BaseModel
 
-load_dotenv()
+from cancel_api.models import CancelInput
+from cancel_api.cancel.chain import run_cancel_chain
+
 
 origins = [
     "http://localhost",
@@ -39,11 +47,15 @@ async def main_route():
     return {"message": "Hey, It is me Goku"}
 
 
-@app.get("/cancel")
-async def cancel():
-    # implement cancel code here
+@app.post("/v0/cancel")
+async def cancel(cancel_input: CancelInput):
+    result = run_cancel_chain(
+        service=cancel_input.service,
+        sender_email=cancel_input.email,
+        name=cancel_input.name,
+    )
 
-    return True
+    return result
 
 
 @app.get("/findSubs")
