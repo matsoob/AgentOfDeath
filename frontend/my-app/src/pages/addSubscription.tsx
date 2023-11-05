@@ -110,6 +110,38 @@ export function SubscriptionManager(props: SubcriptionManagerProps) {
     // console.log(result);
   };
 
+  const onAgentClick = async (rowSubName: string) => {
+    await update(rowSubName, "CANCELLING");
+    await refreshAllSubs(setTableData);
+  };
+
+  const getButton = (status: string, nameOfSub: string) => {
+    switch (status) {
+      case "UNKNOWN":
+        return (
+          <button onClick={() => onConfirmClick(nameOfSub)}>
+            Confirm Cancellation Required
+          </button>
+        );
+      case "NEED_TO_CANCEL":
+        return <button onClick={() => onCancelClick(nameOfSub)}>Cancel</button>;
+      case "CANCELLING":
+        return <button disabled={true}>We are working on this...</button>;
+      case "READY_TO_SEND_EMAIL":
+        return (
+          <button onClick={() => onAgentClick(nameOfSub)}>
+            Send the cancellation request email we prepared
+          </button>
+        );
+      case "REQUIRES_AGENT_CANCELLATION":
+        return (
+          <button onClick={() => onAgentClick(nameOfSub)}>
+            Kick off the Agent-based cancellation step
+          </button>
+        );
+    }
+  };
+
   const isInputInvalid = !subName;
   return (
     <div>
@@ -128,6 +160,11 @@ export function SubscriptionManager(props: SubcriptionManagerProps) {
                 <td className="py-2 px-4">{val.name_of_sub}</td>
                 <td className="py-2 px-4 text-center">{val.status}</td>
                 <td className="py-2 px-4 text-center">
+                  {getButton(val.status, val.name_of_sub)}
+                  {/* {switch(val.status) {
+                        case: 'UNKNOWN':
+
+                    }}
                   {val.status === "UNKNOWN" ? (
                     <button onClick={() => onConfirmClick(val.name_of_sub)}>
                       Confirm Cancellation Required
@@ -137,8 +174,8 @@ export function SubscriptionManager(props: SubcriptionManagerProps) {
                       {val.status === "NEED_TO_CANCEL"
                         ? "Cancel"
                         : "We are working on this"}
-                    </button>
-                  )}
+                    </button> */}
+                  {/* )} */}
                 </td>
               </tr>
             ))}
