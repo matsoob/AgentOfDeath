@@ -1,4 +1,5 @@
 import time
+import argparse
 import xml.etree.ElementTree as ET
 
 from langchain.chat_models.anthropic import ChatAnthropic
@@ -16,9 +17,13 @@ chain = prompt_template | llm.bind(stop=["</command>"]) | StrOutputParser()
 
 
 if __name__ == "__main__":
-    objective = """
-    I want to go through the password reset (forgot password) for my EE account with email "johnsmith@gmail.com"
-    """
+    parser = argparse.ArgumentParser(description="A simple argument parser example.")
+    parser.add_argument("--objective", type=str, help="Objective")
+
+    args = parser.parse_args()
+    # objective = """
+    # "I want to go through the password reset (forgot password) for my EE account with email 'johnsmith@gmail.com'"
+    # """
     start_page = "www.duckduckgo.com"
 
     crawler = Crawler()
@@ -32,7 +37,7 @@ if __name__ == "__main__":
             chain.invoke(
                 {
                     "browser_content": "\n".join(browser_content),
-                    "objective": objective,
+                    "objective": args.objective,
                     "url": crawler.page.url,
                     "previous_command": previous_command,
                 }
