@@ -44,20 +44,25 @@ if __name__ == "__main__":
         print(res)
         root = ET.fromstring("<root>" + res + "</root>")
         thought_text = root.find("thought").text.strip()
-        commands = root.find("command").text.strip().split("\n")
-        previous_command = "\n".join(commands)
-        for command in commands:
-            action_details = command.split()
-            action = action_details[0]
-            element_id = action_details[1]
-            if action == "TYPESUBMIT":
-                text_input = " ".join(action_details[2:]).replace('"', "")
-                crawler.type(id=element_id, text=text_input)
-                crawler.enter()
-            elif action == "CLICK":
-                crawler.click(id=element_id)
-            elif action == "TYPE":
-                text_input = " ".join(action_details[2:]).replace('"', "")
-                crawler.type(id=element_id, text=text_input)
-            elif action == "SCROLL":
-                crawler.scroll(direction=action_details[1].lower())
+        commands = (
+            root.find("command").text.strip().split("\n")
+        )  # in case multiple commands issued
+        command = commands[0]
+        previous_command = commands[0]
+
+        action_details = command.split()
+        action = action_details[0]
+        element_id = action_details[1]
+        if action == "TYPESUBMIT":
+            text_input = " ".join(action_details[2:]).replace('"', "")
+            crawler.type(id=element_id, text=text_input)
+            crawler.enter()
+        elif action == "CLICK":
+            crawler.click(id=element_id)
+        elif action == "TYPE":
+            text_input = " ".join(action_details[2:]).replace('"', "")
+            crawler.type(id=element_id, text=text_input)
+        elif action == "SCROLL":
+            crawler.scroll(direction=action_details[1].lower())
+        else:
+            break

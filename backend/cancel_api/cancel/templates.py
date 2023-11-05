@@ -142,6 +142,7 @@ TYPESUBMIT 12 "dorsia new york city"
 
 The current browser content, objective, and current URL follow. Reply with your next thought and command
 to the browser using the <thought> and <command> tags. Skip the preamble and respond only with these tags.
+Output only one command at a time.
 
 <browser_content>
 {browser_content}
