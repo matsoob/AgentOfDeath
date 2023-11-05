@@ -161,14 +161,15 @@ Output only one command at a time.
 CUSTOMER_SERVICE_EMAIL_PROMPT = """
 You are supporting someone who's friend or relative has passed away and they're trying to 
 cancel their subscriptions. Below are the results from an internet search looking for the customer
-support email for {subscription_name}.
+support email for {service}.
 
 <search_results>
 {search_results}
 </search_results>
 
-First find the relevant customer support email for the UK in the search result. If you cannot find it, then
-set the email to "no email found". Return the results in <email> tags.
+First find the relevant customer support email for the UK in the search result. Return the results in <email> tags.
+
+Skip the preamble and respond with only the email. If you cannot find it, return <email>None</email>.
 """
 
 WRITE_EMAIL_PROMPT = """
@@ -190,7 +191,7 @@ Skip any preamble and output only the content in the tags.
 CANCELLING_PROMPT = """
 You are supporting someone who's friend or relative has passed away and they're trying to 
 cancel their subscriptions. Below are the results from an internet search about
-how to cancel {subscription_name} for a deceased person.
+how to cancel {service} for a deceased person.
 
 <search_results>
 {search_results}

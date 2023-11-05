@@ -45,6 +45,7 @@ def build_extract_email_chain():
         }
         | prompt_template
         | LLM
+        | RunnableLambda(add_xml_root_tags)
         | XMLOutputParser()
     )
 
@@ -88,8 +89,8 @@ def run_cancel_chain(service: str, sender_email: str, name: str):
     """Build the full cancel chain with routing depending on output"""
     extract_email_chain = build_extract_email_chain()
     res = extract_email_chain.invoke({"service": service})
-    cs_email = res["email"]
-    if "no email found" in cs_email.lower():
+    cs_email = res["root"][0]["email"]
+    if "none" in cs_email.lower():
         how_to_cancel_chain = build_how_to_cancel_chain()
         res = how_to_cancel_chain.invoke({"service": service})
         return {"message": res, "email": "UNKNOWN", "subject": "UNKNOWN"}
@@ -99,7 +100,7 @@ def run_cancel_chain(service: str, sender_email: str, name: str):
         {"service": service, "sender_email": sender_email, "name": name}
     )
     return {
-        "message": res["root"]["message"],
-        "subject": res["root"]["subject"],
+        "message": res["root"][0]["message"].strip(),
+        "subject": res["root"][1]["subject"].strip(),
         "email": cs_email,
     }
