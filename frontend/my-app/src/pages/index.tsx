@@ -6,6 +6,7 @@ import { PersonalMessage } from "./personalWelcomeMessage";
 import { SubscriptionManager } from "./addSubscription";
 import { PdfParser } from "./pdf";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import { BankStatementParser } from "./bankStatementParser";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -70,29 +71,34 @@ export default function Home() {
           </Tab>
         </TabList>
         <TabPanel>
-          {isFirstTimeUser ? (
-            <WelcomePage
-              setIsFirstTimeUser={setIsFirstTimeUser}
-              setDeceasedName={setDeceasedName}
+          <div className="p-4 shadow-md">
+            {isFirstTimeUser ? (
+              <WelcomePage
+                setIsFirstTimeUser={setIsFirstTimeUser}
+                setDeceasedName={setDeceasedName}
+              />
+            ) : (
+              <PersonalMessage deceasedName={deceasedName} />
+            )}
+          </div>
+        </TabPanel>
+        <TabPanel>
+          <div className="p-4 shadow-md">
+            <BankStatementParser />
+          </div>
+        </TabPanel>
+        <TabPanel>
+          <div className="p-4 shadow-md">
+            <PdfParser
+              dragAndDropTitle="Drag and Drop a Certificate of Death"
+              submitButtonTitle="Submit for Verification"
             />
-          ) : (
-            <PersonalMessage deceasedName={deceasedName} />
-          )}
+          </div>
         </TabPanel>
         <TabPanel>
-          <PdfParser
-            dragAndDropTitle="Drag and Drop a Bank Statement"
-            submitButtonTitle="Try to find subscriptions"
-          />
-        </TabPanel>
-        <TabPanel>
-          <PdfParser
-            dragAndDropTitle="Drag and Drop a Certificate of Death"
-            submitButtonTitle="Submit for Verification"
-          />
-        </TabPanel>
-        <TabPanel>
-          <SubscriptionManager />
+          <div className="p-4 shadow-md">
+            <SubscriptionManager />
+          </div>
         </TabPanel>
         <TabPanel>
           <div className="p-4 shadow-md">

@@ -127,4 +127,4 @@ async def submitBankStatement(data: BankStatementPayload):
         result = claude_service.parse_bank_statement(
             statement_extracted=statement_extracted
         )
-        return {"message": result}
+        return {"subscriptions": result}

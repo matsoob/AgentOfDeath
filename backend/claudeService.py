@@ -31,14 +31,15 @@ class ClaudeService:
         )
         return completion
 
-    def parse_bank_statement(self, statement_extracted: str):
+    def parse_bank_statement(self, statement_extracted: str) -> list[str]:
         print("Beginning bank statement processing")
         # TODO: test better prompt?
         prompt = f"{HUMAN_PROMPT}Here is a parsed bank statement: <bankStatement>{statement_extracted}</bankStatement>. Please pick out all the recurring subscription services. Return the responses without any extra text, with the name of the subscription on each new line {AI_PROMPT} "
-        print(prompt)
         response = self._make_claude_call(prompt)
+        print("got response from bank statement parsing", response)
+        responses = response.completion.split("\n")
         print("End of bank statement processing")
-        return response
+        return responses
 
     def _make_claude_call_async(self, prompt: str):
         return self.async_client.completions.create(
