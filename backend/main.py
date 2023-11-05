@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+
+load_dotenv()
 import json
 
 from typing import Any, Dict
@@ -6,13 +9,12 @@ from subscriptionService import SubscriptionService
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from exampleService import ExampleService
-from dotenv import load_dotenv
+
 from pydantic import BaseModel
 
 from cancel_api.models import CancelInput
 from cancel_api.cancel.chain import run_cancel_chain
 
-load_dotenv()
 
 origins = [
     "http://localhost",
@@ -118,10 +120,11 @@ async def example(prompt: str):
 
 @app.post("/submit-bank-statement")
 async def submitBankStatement(data: BankStatementPayload):
-    print(data)
     statement_extracted = data.statementContent
     if not statement_extracted:
         print("SOMETHING WENT WRONG")
     else:
-        claude_service.parse_bank_statement(statement_extracted=statement_extracted)
-        return {"message": result}
+        result = claude_service.parse_bank_statement(
+            statement_extracted=statement_extracted
+        )
+        return {"subscriptions": result}

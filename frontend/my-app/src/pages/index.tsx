@@ -6,6 +6,7 @@ import { PersonalMessage } from "./personalWelcomeMessage";
 import { SubscriptionManager } from "./addSubscription";
 import { PdfParser } from "./pdf";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import { BankStatementParser } from "./bankStatementParser";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -63,40 +64,47 @@ export default function Home() {
             List of Subscriptions
           </Tab>
           <Tab className={tabTailwind(4)} onClick={() => setSelectedTab(4)}>
-            New Tab
+            Useful Resources
           </Tab>
           <Tab className={tabTailwind(5)} onClick={() => setSelectedTab(5)}>
             New Tab 2
           </Tab>
         </TabList>
         <TabPanel>
-          {isFirstTimeUser ? (
-            <WelcomePage
-              setIsFirstTimeUser={setIsFirstTimeUser}
-              setDeceasedName={setDeceasedName}
-            />
-          ) : (
-            <PersonalMessage deceasedName={deceasedName} />
-          )}
-        </TabPanel>
-        <TabPanel>
-          <PdfParser
-            dragAndDropTitle="Drag and Drop a Bank Statement"
-            submitButtonTitle="Try to find subscriptions"
-          />
-        </TabPanel>
-        <TabPanel>
-          <PdfParser
-            dragAndDropTitle="Drag and Drop a Certificate of Death"
-            submitButtonTitle="Submit for Verification"
-          />
-        </TabPanel>
-        <TabPanel>
-          <SubscriptionManager />
+          <div className="p-4 shadow-md">
+            {isFirstTimeUser ? (
+              <WelcomePage
+                setIsFirstTimeUser={setIsFirstTimeUser}
+                setDeceasedName={setDeceasedName}
+              />
+            ) : (
+              <PersonalMessage deceasedName={deceasedName} />
+            )}
+          </div>
         </TabPanel>
         <TabPanel>
           <div className="p-4 shadow-md">
-            <div>Example new tab content</div>
+            <BankStatementParser />
+          </div>
+        </TabPanel>
+        <TabPanel>
+          <div className="p-4 shadow-md">
+            <PdfParser
+              dragAndDropTitle="Drag and Drop a Certificate of Death"
+              submitButtonTitle="Submit for Verification"
+            />
+          </div>
+        </TabPanel>
+        <TabPanel>
+          <div className="p-4 shadow-md">
+            <SubscriptionManager />
+          </div>
+        </TabPanel>
+        <TabPanel>
+          <div className="p-4 shadow-md">
+            <a href="https://www.gov.uk/when-someone-dies">
+              Government Step-by-Step Guide
+            </a>
           </div>
         </TabPanel>
         <TabPanel>
