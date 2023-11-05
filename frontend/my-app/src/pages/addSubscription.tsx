@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface SubcriptionManagerProps {
   nameOfDeceased: string;
@@ -46,37 +46,6 @@ async function update(sub_name: string, status: string) {
   }
 }
 
-async function cancelSubscription(
-  subName: string,
-  email: string,
-  name: string
-) {
-  const data = {
-    service: subName,
-    email,
-    name,
-  };
-  try {
-    const result = await fetch(
-      `http://localhost:8000/v0/cancel?name_of_sub=${subName}`,
-      {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (result.ok) {
-      return;
-    } else {
-      throw new Error("There was an error adding subscription to the list");
-    }
-  } catch (e) {
-    console.log(e);
-  }
-}
-
 export function SubscriptionManager(props: SubcriptionManagerProps) {
   const [tableData, setTableData] = useState([] as Array<any>);
   const [subName, setSubName] = useState("");
@@ -94,15 +63,51 @@ export function SubscriptionManager(props: SubcriptionManagerProps) {
     refreshAllSubs(setTableData);
   };
 
+  const cancelSubscription = async (
+    subName: string,
+    email: string,
+    name: string
+  ) => {
+    const data = {
+      service: subName,
+      email,
+      name,
+    };
+    try {
+      const result = await fetch(
+        `http://localhost:8000/v0/cancel?name_of_sub=${subName}`,
+        {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (result.ok) {
+        const content = await result.json();
+        if (content.email === "UNKNOWN") {
+          await update(subName, "REQUIRES_AGENT_CANCELLATION");
+          // "REQUIRES_AGENT_CANCELLATION",
+        } else {
+          await update(subName, "READY_TO_SEND_EMAIL");
+        }
+        return;
+      } else {
+        throw new Error("There was an error adding subscription to the list");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const onCancelClick = async (rowSubName: string) => {
-    const result = await cancelSubscription(
-      rowSubName,
-      props.emailOfDeceased,
-      props.nameOfDeceased
-    );
-    update(rowSubName, "CANCELLING");
-    refreshAllSubs(setTableData);
-    console.log(result);
+    await update(rowSubName, "CANCELLING");
+    await refreshAllSubs(setTableData);
+    cancelSubscription(rowSubName, props.emailOfDeceased, props.nameOfDeceased);
+    // update(rowSubName, "CANCELLING");
+    // refreshAllSubs(setTableData);
+    // console.log(result);
   };
 
   const isInputInvalid = !subName;
