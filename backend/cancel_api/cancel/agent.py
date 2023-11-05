@@ -18,16 +18,16 @@ chain = prompt_template | llm.bind(stop=["</command>"]) | StrOutputParser()
 
 if __name__ == "__main__":
     objective = """
-    I want to cancel my netflix account. Search for the login page and sign in using these details:
-    Username: gerard2314@gmail.com
-    Password: Cardge2314
+    I want to cancel my ee phone contract. Search for the login page and sign in using these details:
+    Username: johnsmith@gmail.com
+    Password: password1234
     """
     start_page = "www.duckduckgo.com"
 
     crawler = Crawler()
     crawler.go_to_page(start_page)
 
-    res = ""
+    previous_command = ""
     while True:
         time.sleep(2)
         browser_content = crawler.crawl()
@@ -37,7 +37,7 @@ if __name__ == "__main__":
                     "browser_content": "\n".join(browser_content),
                     "objective": objective,
                     "url": crawler.page.url,
-                    "previous_command": res,
+                    "previous_command": previous_command,
                 }
             )
             + "</command>"
@@ -46,6 +46,7 @@ if __name__ == "__main__":
         root = ET.fromstring("<root>" + res + "</root>")
         thought_text = root.find("thought").text.strip()
         commands = root.find("command").text.strip().split("\n")
+        previous_command = "\n".join(commands)
         for command in commands:
             action_details = command.split()
             action = action_details[0]
@@ -59,5 +60,5 @@ if __name__ == "__main__":
             elif action == "TYPE":
                 text_input = " ".join(action_details[2:]).replace('"', "")
                 crawler.type(id=element_id, text=text_input)
-            else:
-                break
+            elif action == "SCROLL":
+                crawler.scroll(direction=action_details[1].lower())
