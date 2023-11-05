@@ -1,5 +1,10 @@
 import { FC, useEffect, useState } from "react";
 
+export interface SubcriptionManagerProps {
+  nameOfDeceased: string;
+  emailOfDeceased: string;
+}
+
 async function refreshAllSubs(setTableData: (input: Array<any>) => void) {
   try {
     const result = await fetch("http://localhost:8000/get-all-subs");
@@ -41,14 +46,15 @@ async function update(sub_name: string, status: string) {
   }
 }
 
-async function cancelSubscription(subName: string) {
-  // service=cancel_input.service,
-  // sender_email=cancel_input.email,
-  // name=cancel_input.name,
+async function cancelSubscription(
+  subName: string,
+  email: string,
+  name: string
+) {
   const data = {
     service: subName,
-    email: "test@gmail.com",
-    name: "Jane Doe",
+    email,
+    name,
   };
   try {
     const result = await fetch(
@@ -71,7 +77,7 @@ async function cancelSubscription(subName: string) {
   }
 }
 
-export const SubscriptionManager: FC<any> = () => {
+export function SubscriptionManager(props: SubcriptionManagerProps) {
   const [tableData, setTableData] = useState([] as Array<any>);
   const [subName, setSubName] = useState("");
   useEffect(() => {
@@ -89,7 +95,11 @@ export const SubscriptionManager: FC<any> = () => {
   };
 
   const onCancelClick = async (rowSubName: string) => {
-    const result = await cancelSubscription(rowSubName);
+    const result = await cancelSubscription(
+      rowSubName,
+      props.emailOfDeceased,
+      props.nameOfDeceased
+    );
     update(rowSubName, "CANCELLING");
     refreshAllSubs(setTableData);
     console.log(result);
@@ -149,4 +159,4 @@ export const SubscriptionManager: FC<any> = () => {
       </div>
     </div>
   );
-};
+}

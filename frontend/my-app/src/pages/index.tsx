@@ -97,7 +97,10 @@ export default function Home() {
         </TabPanel>
         <TabPanel>
           <div className="p-4 shadow-md">
-            <SubscriptionManager />
+            <SubscriptionManager
+              nameOfDeceased={deceasedName}
+              emailOfDeceased={"email@email.com"}
+            />
           </div>
         </TabPanel>
         <TabPanel>
