@@ -3,27 +3,27 @@ import { PdfParser } from "./pdf";
 
 interface BankStatementProps {}
 
-async function addSubscription(sub_name: string) {
-  console.log(sub_name);
-  try {
-    // name_of_sub: str, status
-    const result = await fetch(
-      `http://localhost:8000/add-sub?name_of_sub=${sub_name}`
-    );
-    if (result.ok) {
-      return;
-    } else {
-      throw new Error("There was an error adding subscription to the list");
-    }
-  } catch (e) {
-    console.log(e);
-  }
-}
-
 export function BankStatementParser(props: BankStatementProps) {
   const [submittedResponse, setSubmittedResponse] = useState(
     [] as Array<string>
   );
+
+  const addSubscription = async (sub_name: string) => {
+    console.log("Adding ", sub_name);
+    try {
+      // name_of_sub: str, status
+      const result = await fetch(
+        `http://localhost:8000/add-sub?name_of_sub=${sub_name}&status=NEED_TO_CANCEL`
+      );
+      if (result.ok) {
+        return;
+      } else {
+        throw new Error("There was an error adding subscription to the list");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const listOfSubscriptionsToAdd = (subscriptions: Array<string>) => {
     return (

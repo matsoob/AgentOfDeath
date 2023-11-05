@@ -13,7 +13,7 @@ async function sendToBankStatementEndpoint(content: string) {
       },
     });
     if (result.ok) {
-      return (await result.json()).message as unknown as Array<string>;
+      return (await result.json()).subscriptions as unknown as Array<string>;
     } else {
       throw new Error("There was an error Submitting to the Extract Endpoint");
     }
