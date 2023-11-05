@@ -25,6 +25,22 @@ async function addSubscription(sub_name: string) {
   }
 }
 
+async function update(sub_name: string, status: string) {
+  try {
+    // name_of_sub: str, status
+    const result = await fetch(
+      `http://localhost:8000/update-sub?name_of_sub=${sub_name}&status=${status}`
+    );
+    if (result.ok) {
+      return;
+    } else {
+      throw new Error("There was an error adding subscription to the list");
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 export const SubscriptionManager: FC<any> = () => {
   const [tableData, setTableData] = useState([] as Array<any>);
   const [subName, setSubName] = useState("");
@@ -37,6 +53,16 @@ export const SubscriptionManager: FC<any> = () => {
     refreshAllSubs(setTableData);
   };
 
+  const onConfirmClick = (rowSubName: string) => {
+    update(rowSubName, "NEED_TO_CANCEL");
+    refreshAllSubs(setTableData);
+  };
+
+  const onCancelClick = (rowSubName: string) => {
+    update(rowSubName, "CANCELLING");
+    refreshAllSubs(setTableData);
+  };
+
   const isInputInvalid = !subName;
   return (
     <div>
@@ -46,6 +72,7 @@ export const SubscriptionManager: FC<any> = () => {
             <tr>
               <th className="py-2 px-4 text-left">Name of Subscription</th>
               <th className="py-2 px-4 text-center">Status</th>
+              <th className="py-2 px-4 text-center">Next Steps</th>
             </tr>
           </thead>
           <tbody>
@@ -53,6 +80,19 @@ export const SubscriptionManager: FC<any> = () => {
               <tr key={key} className="hover:bold">
                 <td className="py-2 px-4">{val.name_of_sub}</td>
                 <td className="py-2 px-4 text-center">{val.status}</td>
+                <td className="py-2 px-4 text-center">
+                  {val.status === "UNKNOWN" ? (
+                    <button onClick={() => onConfirmClick(val.name_of_sub)}>
+                      Confirm Cancellation Required
+                    </button>
+                  ) : (
+                    <button onClick={() => onCancelClick(val.name_of_sub)}>
+                      {val.status === "NEED_TO_CANCEL"
+                        ? "Cancel"
+                        : "We are working on this"}
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

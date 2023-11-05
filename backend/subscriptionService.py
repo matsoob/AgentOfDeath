@@ -17,3 +17,12 @@ class SubscriptionService:
                 "We got an unrecognised type of subscription insertion into DB"
             )
         self.list.append({"name_of_sub": name_of_sub, "status": status})
+
+    def update_sub(self, *, name_of_sub: str, status: str):
+        print(self.list)
+        print(name_of_sub)
+        for item in self.list:
+            if item.get("name_of_sub", None) == name_of_sub:
+                print("Updating")
+                item["status"] = status
+                return

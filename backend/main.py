@@ -103,6 +103,13 @@ async def addSub(name_of_sub: str, status: str = "UNKNOWN"):
     return
 
 
+@app.get("/update-sub")
+async def updateSub(name_of_sub: str, status: str):
+    print("update-sub")
+    result = subscription_service.update_sub(name_of_sub=name_of_sub, status=status)
+    return
+
+
 claude_service = ClaudeService()
 
 
