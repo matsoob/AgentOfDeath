@@ -1,17 +1,10 @@
 import os
 from langchain.chat_models.anthropic import ChatAnthropic
+from langchain.chat_models.openai import ChatOpenAI
 from langchain.tools.brave_search.tool import BraveSearch
 from langchain.schema.runnable import RunnableLambda
 from langchain.schema import StrOutputParser
 from langchain.prompts import PromptTemplate
-
-
-
-
-
-
-
-
 
 
 def build_cancel_chain_v0():
@@ -29,7 +22,6 @@ def build_cancel_chain_v0():
         Output the easiest steps the user should take to cancel their subscription.
         """
 
-
     def search_how_to_cancel(subscription_name: str):
         """Use the brave search tool to find how to cancel that subscription"""
         query = f"how to cancel {subscription_name} for a deceased person"
@@ -38,9 +30,8 @@ def build_cancel_chain_v0():
         results = brave_search.run(query)
 
         return results
-        
-    
-    llm = ChatAnthropic()
+
+    llm = ChatAnthropic(model_name="claude-2", temperature=0)
 
     prompt_template = PromptTemplate.from_template(CANCELLING_PROMPT)
     return (
@@ -54,12 +45,8 @@ def build_cancel_chain_v0():
     )
 
 
-
-
-
 def build_cancel_chain_v1():
     """Build the chain of to get the cancel email and create the cancel email for a subscription"""
-
 
     CANCELLING_PROMPT = """
         You are supporting someone who's friend or relative has passed away and they're trying to 
@@ -71,15 +58,22 @@ def build_cancel_chain_v1():
         </search_results>
 
 
-        First find the relevant customer support email for the UK in the search result. 
+        First find the relevant customer support email for the UK in the search result.
         Now write an email to cancel the {subscription_name} for customer {name} from {sender_email} in the json format below.
+
         {{
         message: {{message}},
         to: {{customer_support_email}},
         subject: {{subject}},
         }}
-        
-        Output only the json and no other text.
+
+        If you do not find an email in the search results, then output:
+
+        {{
+        message: "I could not find the email to cancel {subscription_name}"
+        }}
+
+        Skip any preamble and output only the JSON.
         """
 
     def search_get_cancel_email(subscription_name: str):
@@ -91,8 +85,7 @@ def build_cancel_chain_v1():
 
         return results
 
-    
-    llm = ChatAnthropic()
+    llm = ChatAnthropic(model_name="claude-2", temperature=0)
 
     prompt_template = PromptTemplate.from_template(CANCELLING_PROMPT)
     return (
@@ -108,8 +101,7 @@ def build_cancel_chain_v1():
     )
 
 
-
-
 if __name__ == "__main__":
     cancel_chain = build_cancel_chain()
     print(cancel_chain.invoke({"subscription_name": "puregym"}))
+

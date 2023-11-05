@@ -45,5 +45,5 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-
+*/node-modules/*
 .DS_Store
