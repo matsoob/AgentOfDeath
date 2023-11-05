@@ -54,6 +54,9 @@ export default function Home() {
           <Tab className={tabTailwind(0)} onClick={() => setSelectedTab(0)}>
             Welcome
           </Tab>
+          <Tab className={tabTailwind(4)} onClick={() => setSelectedTab(4)}>
+            Useful Resources
+          </Tab>
           <Tab className={tabTailwind(1)} onClick={() => setSelectedTab(1)}>
             Add Bankstatement
           </Tab>
@@ -62,12 +65,6 @@ export default function Home() {
           </Tab>
           <Tab className={tabTailwind(3)} onClick={() => setSelectedTab(3)}>
             List of Subscriptions
-          </Tab>
-          <Tab className={tabTailwind(4)} onClick={() => setSelectedTab(4)}>
-            Useful Resources
-          </Tab>
-          <Tab className={tabTailwind(5)} onClick={() => setSelectedTab(5)}>
-            New Tab 2
           </Tab>
         </TabList>
         <TabPanel>
@@ -80,6 +77,13 @@ export default function Home() {
             ) : (
               <PersonalMessage deceasedName={deceasedName} />
             )}
+          </div>
+        </TabPanel>
+        <TabPanel>
+          <div className="p-4 shadow-md">
+            <a href="https://www.gov.uk/when-someone-dies">
+              Government Step-by-Step Guide
+            </a>
           </div>
         </TabPanel>
         <TabPanel>
@@ -102,16 +106,6 @@ export default function Home() {
               emailOfDeceased={"email@email.com"}
             />
           </div>
-        </TabPanel>
-        <TabPanel>
-          <div className="p-4 shadow-md">
-            <a href="https://www.gov.uk/when-someone-dies">
-              Government Step-by-Step Guide
-            </a>
-          </div>
-        </TabPanel>
-        <TabPanel>
-          <div>Example new tab content 2</div>
         </TabPanel>
       </Tabs>
     </main>
