@@ -160,30 +160,31 @@ Output only one command at a time.
 
 CUSTOMER_SERVICE_EMAIL_PROMPT = """
 You are supporting someone who's friend or relative has passed away and they're trying to 
-cancel their subscriptions. Below are the results from an internet search about
-how to cancel {subscription_name} for a deceased person.
+cancel their subscriptions. Below are the results from an internet search looking for the customer
+support email for {subscription_name}.
 
 <search_results>
 {search_results}
 </search_results>
 
+First find the relevant customer support email for the UK in the search result. If you cannot find it, then
+set the email to "no email found". Return the results in <email> tags.
+"""
 
-First find the relevant customer support email for the UK in the search result.
-Now write an email to cancel the {subscription_name} for customer {name} from {sender_email} in the json format below.
+WRITE_EMAIL_PROMPT = """
+You are supporting someone who's friend or relative has passed away and they're trying to 
+cancel their subscriptions. 
 
-{{
-message: {{message}},
-to: {{customer_support_email}},
-subject: {{subject}},
-}}
+Write an email to cancel the {service} for customer {name} with email {sender_email} using the tags below.
 
-If you do not find an email in the search results, then output:
+<message>
+"message"
+</message>
+<subject>
+"subject
+</subject>
 
-{{
-message: "I could not find the email to cancel {subscription_name}"
-}}
-
-Skip any preamble and output only the JSON.
+Skip any preamble and output only the content in the tags.
 """
 
 CANCELLING_PROMPT = """

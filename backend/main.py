@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 
 from cancel_api.models import CancelInput
-from cancel_api.cancel.chain import build_cancel_chain_v1
+from cancel_api.cancel.chain import run_cancel_chain
 
 load_dotenv()
 
@@ -47,16 +47,13 @@ async def main_route():
 
 @app.post("/v0/cancel")
 async def cancel(cancel_input: CancelInput):
-    cancel_chain = build_cancel_chain_v1()
-    out = cancel_chain.invoke(
-        {
-            "service": cancel_input.service,
-            "sender_email": cancel_input.email,
-            "name": cancel_input.name,
-        }
+    result = run_cancel_chain(
+        service=cancel_input.service,
+        sender_email=cancel_input.email,
+        name=cancel_input.name,
     )
 
-    return json.loads(out)
+    return result
 
 
 @app.get("/findSubs")

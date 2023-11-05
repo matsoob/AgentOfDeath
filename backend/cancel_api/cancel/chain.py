@@ -2,11 +2,18 @@ import os
 from langchain.chat_models.anthropic import ChatAnthropic
 from langchain.chat_models.openai import ChatOpenAI
 from langchain.tools.brave_search.tool import BraveSearch
-from langchain.schema.runnable import RunnableLambda
-from langchain.schema import StrOutputParser
+from langchain.schema.runnable import RunnableLambda, RunnableBranch
+from langchain.schema import StrOutputParser, AIMessage
 from langchain.prompts import PromptTemplate
+from langchain.output_parsers import XMLOutputParser
 
-from templates import CUSTOMER_SERVICE_EMAIL_PROMPT, CANCELLING_PROMPT
+from .templates import (
+    CUSTOMER_SERVICE_EMAIL_PROMPT,
+    CANCELLING_PROMPT,
+    WRITE_EMAIL_PROMPT,
+)
+
+LLM = ChatAnthropic(model_name="claude-2", temperature=0)
 
 
 def search_brave(query: str):
@@ -18,14 +25,36 @@ def search_brave(query: str):
     return results
 
 
-def build_cancel_chain_v0():
+def add_xml_root_tags(input: AIMessage):
+    """Add root tags to xml text"""
+    return f"<root>{input.content.strip()}</root>"
+
+
+def build_extract_email_chain():
+    """Build chain for extracting email from search results"""
+    query_template = "what is the customer service email for {service} in UK"
+
+    find_cs_email = lambda service: search_brave(query_template.format(service=service))
+
+    prompt_template = PromptTemplate.from_template(CUSTOMER_SERVICE_EMAIL_PROMPT)
+
+    return (
+        {
+            "service": lambda inputs: inputs["service"],
+            "search_results": RunnableLambda(find_cs_email),
+        }
+        | prompt_template
+        | LLM
+        | XMLOutputParser()
+    )
+
+
+def build_how_to_cancel_chain():
     """Build the chain of how to cancel a subscription"""
 
     query_template = "how to cancel {service} for a deceased person"
 
     how_to_cancel = lambda service: search_brave(query_template.format(service=service))
-
-    llm = ChatAnthropic(model_name="claude-2", temperature=0)
 
     prompt_template = PromptTemplate.from_template(CANCELLING_PROMPT)
     return (
@@ -34,29 +63,43 @@ def build_cancel_chain_v0():
             "search_results": RunnableLambda(how_to_cancel),
         }
         | prompt_template
-        | llm
+        | LLM
         | StrOutputParser()
     )
 
 
-def build_cancel_chain_v1():
+def build_write_email_chain():
     """Build the chain of to get the cancel email and create the cancel email for a subscription"""
-
-    query_template = "what is the customer service email for {service}"
-
-    find_cs_email = lambda service: search_brave(query_template.format(service=service))
-
-    llm = ChatAnthropic(model_name="claude-2", temperature=0)
-
-    prompt_template = PromptTemplate.from_template(CUSTOMER_SERVICE_EMAIL_PROMPT)
+    prompt_template = PromptTemplate.from_template(WRITE_EMAIL_PROMPT)
     return (
         {
-            "subscription_name": lambda inputs: inputs["service"],
+            "service": lambda inputs: inputs["service"],
             "name": lambda inputs: inputs["name"],
             "sender_email": lambda inputs: inputs["sender_email"],
-            "search_results": RunnableLambda(find_cs_email),
         }
         | prompt_template
-        | llm
-        | StrOutputParser()
+        | LLM
+        | RunnableLambda(add_xml_root_tags)
+        | XMLOutputParser()
     )
+
+
+def run_cancel_chain(service: str, sender_email: str, name: str):
+    """Build the full cancel chain with routing depending on output"""
+    extract_email_chain = build_extract_email_chain()
+    res = extract_email_chain.invoke({"service": service})
+    cs_email = res["email"]
+    if "no email found" in cs_email.lower():
+        how_to_cancel_chain = build_how_to_cancel_chain()
+        res = how_to_cancel_chain.invoke({"service": service})
+        return {"message": res, "email": "UNKNOWN", "subject": "UNKNOWN"}
+
+    write_email_chain = build_write_email_chain()
+    res = write_email_chain.invoke(
+        {"service": service, "sender_email": sender_email, "name": name}
+    )
+    return {
+        "message": res["root"]["message"],
+        "subject": res["root"]["subject"],
+        "email": cs_email,
+    }
