@@ -104,3 +104,4 @@ def build_cancel_chain_v1():
 if __name__ == "__main__":
     cancel_chain = build_cancel_chain()
     print(cancel_chain.invoke({"subscription_name": "puregym"}))
+
