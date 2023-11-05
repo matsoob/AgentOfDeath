@@ -3,8 +3,8 @@ from playwright.sync_api import Browser, CDPSession, Page, sync_playwright
 
 LINK_TEMPLATE = "<link id={id} href={href}>{text}</link>"
 BUTTON_TEMPLATE = "<button id={id}>{text}</button>"
-TEXT_INPUT_TEMPLATE = '<input id={id} type="text" placeholder="{placeholder}" name="{name}" value="{value}"></input>'
-PASSWORD_INPUT_TEMPLATE = '<input id={id} type="password" placeholder="{placeholder}" name="{name}" value="{value}"></input>'
+TEXT_INPUT_TEMPLATE = '<input id={id} type="text" placeholder="{placeholder}" name="{name}" value="{value}">{text}</input>'
+PASSWORD_INPUT_TEMPLATE = '<input id={id} type="password" placeholder="{placeholder}" name="{name}" value="{value}">{text}</input>'
 
 TEMPLATE_MAP = {
     "link": LINK_TEMPLATE,
@@ -12,6 +12,20 @@ TEMPLATE_MAP = {
     "text_input": TEXT_INPUT_TEMPLATE,
     "password_input": PASSWORD_INPUT_TEMPLATE,
 }
+
+
+def get_text_from_element_or_parent(el):
+    text = el.text_content().strip()
+
+    # If the element doesn't have text, try to get the text from its immediate parent.
+    if not text:
+        parent_text = el.evaluate(
+            "element => element.parentElement && element.parentElement.textContent"
+        )
+        if parent_text:
+            text = parent_text.strip()
+
+    return text
 
 
 class Crawler:
@@ -54,8 +68,11 @@ class Crawler:
             print("Could not find element")
 
     def type(self, id: Union[str, int], text: str) -> None:
-        self.click(id)
-        self.page.keyboard.type(text)
+        element = self.page_element_buffer.get(int(id))
+        if element:
+            element.type(text)
+        else:
+            print("Could not find element")
 
     def enter(self) -> None:
         self.page.keyboard.press("Enter")
@@ -84,9 +101,10 @@ class Crawler:
         text_inputs_data = [
             {
                 "type": "text_input",
-                "placeholder": el.get_attribute("placeholder"),
+                "text": get_text_from_element_or_parent(el),
                 "name": el.get_attribute("name"),
                 "value": el.get_attribute("value"),
+                "placeholder": el.get_attribute("placeholder"),
                 "element": el,
             }
             for el in text_inputs
@@ -97,9 +115,10 @@ class Crawler:
         password_inputs_data = [
             {
                 "type": "password_input",
-                "placeholder": el.get_attribute("placeholder"),
+                "text": get_text_from_element_or_parent(el),
                 "name": el.get_attribute("name"),
                 "value": el.get_attribute("value"),
+                "placeholder": el.get_attribute("placeholder"),
                 "element": el,
             }
             for el in password_inputs

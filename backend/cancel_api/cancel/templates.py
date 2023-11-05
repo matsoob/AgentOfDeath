@@ -17,11 +17,7 @@ Interactive elements such as links, inputs, buttons are represented like this:
 
 		<link id=1>text</link>
 		<button id=2>text</button>
-		<input id=3>text</input>
-
-Images are rendered as their alt text like this:
-
-		<img id=4 alt=""/>
+		<input id=3 type="text">text</input>
 
 Based on your given objective, issue whatever command you believe will get you closest to achieving your goal.
 You always start on Google; you should submit a search query to Google that will take you to the best page for
@@ -29,10 +25,6 @@ achieving your objective. And then interact with that page to achieve your objec
 
 If you find yourself on Google and there are no search results displayed yet, you should probably issue a command
 like "TYPESUBMIT 7 "search query"" to get to a more useful page.
-
-Then, if you find yourself on a Google search results page, you might issue the command "CLICK 24" to click
-on the first link in the search results. (If your previous command was a TYPESUBMIT your next command should
-probably be a CLICK.)
 
 Don't try to interact with elements that you can't see.
 
@@ -47,7 +39,6 @@ Here are some examples:
 <link id=4>Images</link>
 <link id=5>(Google apps)</link>
 <link id=6>Sign in</link>
-<img id=7 alt="(Google)"/>
 <input id=8 alt="Search"></input>
 <button id=9>(Search by voice)</button>
 <button id=10>(Google Search)</button>
@@ -60,10 +51,20 @@ Here are some examples:
 <link id=17>Terms</link>
 <text id=18>Settings</text>
 </browser_content>
-OBJECTIVE: Find a 2 bedroom house for sale in Anchorage AK for under $750k
-CURRENT URL: https://www.google.com/
-YOUR COMMAND:
+<objective>
+Find a 2 bedroom house for sale in Anchorage AK for under $750k
+</objective>
+<current_url>
+https://www.google.com/
+</current_url>
+<previous_command>
+</previous_command>
+<thought>
+I need to search for property in anchorage on redfin
+</thought>
+<command>
 TYPESUBMIT 8 "anchorage redfin"
+</command>
 </example>
 
 <example>
@@ -74,7 +75,6 @@ TYPESUBMIT 8 "anchorage redfin"
 <link id=4>Images</link>
 <link id=5>(Google apps)</link>
 <link id=6>Sign in</link>
-<img id=7 alt="(Google)"/>
 <input id=8 alt="Search"></input>
 <button id=9>(Search by voice)</button>
 <button id=10>(Google Search)</button>
@@ -87,10 +87,20 @@ TYPESUBMIT 8 "anchorage redfin"
 <link id=17>Terms</link>
 <text id=18>Settings</text>
 </browser_content>
-OBJECTIVE: Make a reservation for 4 at Dorsia at 8pm
-CURRENT URL: https://www.google.com/
-YOUR COMMAND:
+<objective>
+Make a reservation for 4 at Dorsia at 8pm
+</objective>
+<current_url>
+https://www.google.com/
+</current_url>
+<previous_command>
+</previous_command>
+<thought>
+I need to look up the restaurant dorsia on opentable
+</thought>
+<command>
 TYPESUBMIT 8 "dorsia nyc opentable"
+</command>
 </example>
 
 <example>
@@ -112,21 +122,37 @@ TYPESUBMIT 8 "dorsia nyc opentable"
 <button id=15>Get current location</button>
 <button id=16>Next</button>
 </browser_content>
-OBJECTIVE: Make a reservation for 4 for dinner at Dorsia in New York City at 8pm
-CURRENT URL: https://www.opentable.com/
-YOUR COMMAND:
+<objective>
+Make a reservation for 4 for dinner at Dorsia in New York City at 8pm
+</objective>
+<current_url>
+https://www.opentable.com/
+</current_url>
+<previous_command>
+CLICK 20
+</previous command>
+<thought>
+I need to search for dorsia in new york city
+</thought>
+<command>
 TYPESUBMIT 12 "dorsia new york city"
+</command>
 </example>
 </examples>
 
-The current browser content, objective, and current URL follow. Reply with your next command to the browser.
-Skip the preamble and respond only with the command, and no other text.
+The current browser content, objective, and current URL follow. Reply with your next thought and command
+to the browser using the <thought> and <command> tags. Skip the preamble and respond only with these tags.
 
 <browser_content>
 {browser_content}
 </browser_content>
-OBJECTIVE: {objective}
-CURRENT URL: {url}
-PREVIOUS COMMAND: {previous_command}
-YOUR COMMAND:
+<objective>
+{objective}
+</objective>
+<current_url>
+{url}
+</current_url>
+<previous_command>
+{previous_command}
+</previous_command>
 """
