@@ -17,9 +17,7 @@ chain = prompt_template | llm.bind(stop=["</command>"]) | StrOutputParser()
 
 if __name__ == "__main__":
     objective = """
-    I want to cancel my ee phone contract. Search for the login page and sign in using these details:
-    Username: johnsmith@gmail.com
-    Password: password1234
+    I want to go through the password reset (forgot password) for my EE account with email "johnsmith@gmail.com"
     """
     start_page = "www.duckduckgo.com"
 
@@ -47,22 +45,21 @@ if __name__ == "__main__":
         commands = (
             root.find("command").text.strip().split("\n")
         )  # in case multiple commands issued
-        command = commands[0]
-        previous_command = commands[0]
-
-        action_details = command.split()
-        action = action_details[0]
-        element_id = action_details[1]
-        if action == "TYPESUBMIT":
-            text_input = " ".join(action_details[2:]).replace('"', "")
-            crawler.type(id=element_id, text=text_input)
-            crawler.enter()
-        elif action == "CLICK":
-            crawler.click(id=element_id)
-        elif action == "TYPE":
-            text_input = " ".join(action_details[2:]).replace('"', "")
-            crawler.type(id=element_id, text=text_input)
-        elif action == "SCROLL":
-            crawler.scroll(direction=action_details[1].lower())
-        else:
-            break
+        previous_command = "\n".join(commands)
+        for command in commands:
+            action_details = command.split()
+            action = action_details[0]
+            element_id = action_details[1]
+            if action == "TYPESUBMIT":
+                text_input = " ".join(action_details[2:]).replace('"', "")
+                crawler.type(id=element_id, text=text_input)
+                crawler.enter()
+            elif action == "CLICK":
+                crawler.click(id=element_id)
+            elif action == "TYPE":
+                text_input = " ".join(action_details[2:]).replace('"', "")
+                crawler.type(id=element_id, text=text_input)
+            elif action == "SCROLL":
+                crawler.scroll(direction=action_details[1].lower())
+            else:
+                break
