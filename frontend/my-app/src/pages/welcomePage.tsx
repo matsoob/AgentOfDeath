@@ -6,19 +6,26 @@ export interface WelcomePageProps {
   setDeceasedName: Dispatch<SetStateAction<string>>;
 }
 
-export const WelcomePage: FC<WelcomePageProps> = ({ setIsFirstTimeUser, setDeceasedName }) => {
-
+export const WelcomePage: FC<WelcomePageProps> = ({
+  setIsFirstTimeUser,
+  setDeceasedName,
+}) => {
   return (
     <div>
-      <span>Welcome to Agent. We are very sorry for your loss.</span>
+      <span className="mt-50">
+        Welcome to Agent. We are very sorry for your loss.
+      </span>
+      <br />
+      <br />
       <div>
         {" "}
-        <div>
+        <div className="mt-50">
           <p>What is the name of the deceased person?</p>
           <input
             type="text"
             onChange={(e) => setDeceasedName(e.target.value)}
             placeholder="Enter name here"
+            className="mt-50"
           />
         </div>
         <button

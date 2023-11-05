@@ -40,36 +40,39 @@ export const SubscriptionManager: FC<any> = () => {
   const isInputInvalid = !subName;
   return (
     <div>
-      <div>
-        <table>
-          <thead>
+      <div className="mb-6">
+        <table className="min-w-full border-collapse border border-gray-300">
+          <thead className="bg-gray-200">
             <tr>
-              <th>Name of Subscription</th>
-              <th>Status</th>
+              <th className="py-2 px-4 text-left">Name of Subscription</th>
+              <th className="py-2 px-4 text-center">Status</th>
             </tr>
           </thead>
           <tbody>
-            {tableData.map((val, key) => {
-              return (
-                <tr key={key}>
-                  <td>{val.name_of_sub}</td>
-                  <td>{val.status}</td>
-                </tr>
-              );
-            })}
+            {tableData.map((val, key) => (
+              <tr key={key} className="hover:bold">
+                <td className="py-2 px-4">{val.name_of_sub}</td>
+                <td className="py-2 px-4 text-center">{val.status}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
       <div>
-        <span>Add Subscription</span>
+        <span className="text-xl font-bold">Add Subscription</span>
         <textarea
-          id="add-subsctiption"
-          placeholder="Input the subscription you would like cancelled"
+          id="add-subscription"
+          className="w-full p-2 mt-2 border border-gray-300 rounded"
+          placeholder="Input the subscription you would like to cancel"
           value={subName}
-          onChange={(foo) => setSubName(foo.target.value)}
+          onChange={(e) => setSubName(e.target.value)}
         />
-        <button onClick={onButtonClick} disabled={isInputInvalid}>
-          send
+        <button
+          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          onClick={onButtonClick}
+          disabled={isInputInvalid}
+        >
+          Send
         </button>
       </div>
     </div>
