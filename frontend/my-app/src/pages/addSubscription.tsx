@@ -41,6 +41,36 @@ async function update(sub_name: string, status: string) {
   }
 }
 
+async function cancelSubscription(subName: string) {
+  // service=cancel_input.service,
+  // sender_email=cancel_input.email,
+  // name=cancel_input.name,
+  const data = {
+    service: subName,
+    email: "test@gmail.com",
+    name: "Jane Doe",
+  };
+  try {
+    const result = await fetch(
+      `http://localhost:8000/v0/cancel?name_of_sub=${subName}`,
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (result.ok) {
+      return;
+    } else {
+      throw new Error("There was an error adding subscription to the list");
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 export const SubscriptionManager: FC<any> = () => {
   const [tableData, setTableData] = useState([] as Array<any>);
   const [subName, setSubName] = useState("");
@@ -58,9 +88,11 @@ export const SubscriptionManager: FC<any> = () => {
     refreshAllSubs(setTableData);
   };
 
-  const onCancelClick = (rowSubName: string) => {
+  const onCancelClick = async (rowSubName: string) => {
+    const result = await cancelSubscription(rowSubName);
     update(rowSubName, "CANCELLING");
     refreshAllSubs(setTableData);
+    console.log(result);
   };
 
   const isInputInvalid = !subName;
