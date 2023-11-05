@@ -23,6 +23,7 @@ async function firstTimeUser(): Promise<boolean> {
 export default function Home() {
   const [isFirstTimeUser, setIsFirstTimeUser] = useState(true);
   const [deceasedName, setDeceasedName] = useState("");
+  const [selectedTab, setSelectedTab] = useState(0);
 
   useEffect(() => {
     // Use `useEffect` for making the API call when the component mounts
@@ -39,14 +40,16 @@ export default function Home() {
   }, []);
 
   const tabTailwind =
-    "py-2 px-4 bg-blue-500 text-white rounded-lg cursor-pointer";
+    "py-2 px-4 rounded-t-lg cursor-pointer text-center flex items-center hover:mix-blend-screen hover:bg-darkgreen";
   return (
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24`}
     >
-      <Tabs className="bg-gray-100 p-4">
-        <TabList className="flex space-x-4">
-          <Tab className={tabTailwind}>Welcome</Tab>
+      <Tabs className="flex flex-col space-y-2 ">
+        <TabList className="flex space-x-4 border-b-2 border-foregroundgreen">
+          <Tab className={tabTailwind} onClick={() => setSelectedTab(0)}>
+            Welcome
+          </Tab>
           <Tab className={tabTailwind}>Add Bankstatement</Tab>
           <Tab className={tabTailwind}>Add Certificate</Tab>
           <Tab className={tabTailwind}>List of Subscriptions</Tab>

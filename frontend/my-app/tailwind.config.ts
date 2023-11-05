@@ -17,6 +17,9 @@ const config: Config = {
       "gray-dark": "#273444",
       gray: "#8492a6",
       "gray-light": "#d3dce6",
+      white: "#ffffff",
+      darkgreen: "#0e2e16",
+      foregroundgreen: "#649664",
     },
     fontFamily: {
       sans: ["Graphik", "sans-serif"],
