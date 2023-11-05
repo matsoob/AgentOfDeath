@@ -73,15 +73,13 @@ def build_cancel_chain_v1():
 
         First find the relevant customer support email for the UK in the search result. 
         Now write an email to cancel the {subscription_name} for customer {name} from {sender_email} in the json format below.
-
-        Output only the json and no other text.
-
         {{
         message: {{message}},
         to: {{customer_support_email}},
         subject: {{subject}},
         }}
-
+        
+        Output only the json and no other text.
         """
 
     def search_get_cancel_email(subscription_name: str):

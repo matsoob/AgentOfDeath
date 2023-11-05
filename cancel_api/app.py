@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from cancel_api.models import CancelInput
 from cancel_api.cancel.chain import build_cancel_chain_v0, build_cancel_chain_v1
 
+import requests
 import json
 
 
@@ -33,7 +34,22 @@ async def cancel_service(cancel_input: CancelInput):
     cancel_chain = build_cancel_chain_v1()
     out = cancel_chain.invoke({"service": cancel_input.service, "sender_email": cancel_input.email, "name": cancel_input.name})
 
-    return json.loads(out)
+    # return json.loads(out)
+    return out
+
+
+@app.post("/v0/cancel_browser/")
+async def cancel_service_from_browser(cancel_input: CancelInput):
+    # Your logic to handle the cancellation goes here.
+
+    url = 'http://127.0.0.1:8081/v0/cancel_browser'
+    payload = cancel_input.dict()
+    print(payload)
+    headers = {'Content-Type': 'application/json'}
+
+    # response = requests.post(url, data=payload, headers=headers)
+    response = requests.post(url, headers=headers)
+    return response
 
 
 @app.get("/")
