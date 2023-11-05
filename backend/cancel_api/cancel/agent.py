@@ -2,7 +2,6 @@ import time
 import xml.etree.ElementTree as ET
 
 from langchain.chat_models.anthropic import ChatAnthropic
-from langchain.chat_models.openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.schema import StrOutputParser
 
