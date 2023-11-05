@@ -64,7 +64,7 @@ export default function Home() {
             List of Subscriptions
           </Tab>
           <Tab className={tabTailwind(4)} onClick={() => setSelectedTab(4)}>
-            New Tab
+            Useful Resources
           </Tab>
           <Tab className={tabTailwind(5)} onClick={() => setSelectedTab(5)}>
             New Tab 2
@@ -102,7 +102,9 @@ export default function Home() {
         </TabPanel>
         <TabPanel>
           <div className="p-4 shadow-md">
-            <div>Example new tab content</div>
+            <a href="https://www.gov.uk/when-someone-dies">
+              Government Step-by-Step Guide
+            </a>
           </div>
         </TabPanel>
         <TabPanel>
